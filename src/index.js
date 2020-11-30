@@ -70,6 +70,16 @@ bot.once('ready', () => {
     = bot.channels.cache.filter(channel => targetRegex.test(channel.topic));
 });
 
+bot.on('ready', () => {
+  bot.user?.setPresence({
+    activity: {
+      type: 'WATCHING',
+      name: '語部紡',
+    }
+  })
+    .catch(console.error);
+});
+
 bot.on('channelUpdate', (_, channel) => {
   targetRegex.test(channel.topic)
     ? channels.set(channel.id, channel) : channels.delete(channel.id);
