@@ -84,6 +84,6 @@ bot.setInterval(() => {
     .catch(console.error);
 }, 24 * 60 * 60 * 1000);
 
-bot.login()
+bot.login(process.env['EVERYDAY_KATARIBE_TOKEN'])
   .then(console.info('Everyday Kataribe logged in to Discord.'))
   .catch(console.error);
