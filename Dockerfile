@@ -1,10 +1,10 @@
 FROM node:14
 
-WORKDIR /discord_bot/everyday_kataribe
+WORKDIR /app/everyday_kataribe
 
 COPY package*.json ./
-RUN npm i
+RUN npm ci
 
 COPY . .
 
-CMD [ "npm", "start" ]
+CMD [ "node", "src/index.js" ]
