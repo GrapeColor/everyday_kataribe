@@ -16,7 +16,10 @@ export namespace Lottery {
 
   async function cacheTweets(client: TwitterApiReadOnly): Promise<void> {
     const user = await client.v2.userByUsername(twitterId);
-    const pagenator = await client.v2.userTimeline(user.data.id, { exclude: 'retweets' });
+    const pagenator = await client.v2.userTimeline(user.data.id, {
+      exclude: 'retweets',
+      'tweet.fields': ['referenced_tweets'],
+    });
 
     await pagenator.fetchLast(1000)
     tweets.push(...pagenator);
@@ -25,6 +28,9 @@ export namespace Lottery {
   export function pickTweetURL(): string {
     const index = Math.floor(Math.random() * tweets.length);
     const tweet = tweets[index];
-    return `https://twitter.com/${twitterId}/status/${tweet.id}`;
+
+    return !tweet.referenced_tweets?.some(tweet => tweet.type === 'quoted')
+      ? `https://twitter.com/${twitterId}/status/${tweet.id}`
+      : pickTweetURL();
   }
 }
