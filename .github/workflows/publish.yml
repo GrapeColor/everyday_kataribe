@@ -54,12 +54,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          build-args: |
-            EVERYDAY_KATARIBE_TOKEN=${{ secrets.EVERYDAY_KATARIBE_TOKEN }}
-            TWITTER_BEARER_TOKEN=${{ secrets.TWITTER_BEARER_TOKEN }}
-            RANDOM_POST_TWEET_SCHEDULE=${{ secrets.RANDOM_POST_TWEET_SCHEDULE }}
-            ACTIVITY_STREAMING_NAME=${{ secrets.ACTIVITY_STREAMING_NAME }}
-            ACTIVITY_STREAMING_URL=${{ secrets.ACTIVITY_STREAMING_URL }}
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
