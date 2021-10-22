@@ -60,7 +60,7 @@ jobs:
             RANDOM_POST_TWEET_SCHEDULE=${{ secrets.RANDOM_POST_TWEET_SCHEDULE }}
             ACTIVITY_STREAMING_NAME=${{ secrets.ACTIVITY_STREAMING_NAME }}
             ACTIVITY_STREAMING_URL=${{ secrets.ACTIVITY_STREAMING_URL }}
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
