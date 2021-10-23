@@ -63,7 +63,7 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:latest
             ${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }}
-            ${{ IMAGE_TAG_WITH_GIT_TAG }}
+            ${{ env.IMAGE_TAG_WITH_GIT_TAG }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
 
