@@ -126,7 +126,7 @@ jobs:
             -e RANDOM_POST_TWEET_SCHEDULE=${{ env.RANDOM_POST_TWEET_SCHEDULE }} \
             -e ACTIVITY_STREAMING_NAME=${{ env.ACTIVITY_STREAMING_NAME }} \
             -e ACTIVITY_STREAMING_URL=${{ env.ACTIVITY_STREAMING_URL }} \
-            -- name ${{ env.APP_NAME }}_worker \
+            --name ${{ env.APP_NAME }}_worker \
             ${{ env.DOCKER_REPOSITORY }}
             echo "# Start new Docker container"
             sudo systemctl start ${{ env.APP_NAME }}
