@@ -10,22 +10,22 @@ on:
   workflow_dispatch:
 
 jobs:
-  generate_image_name:
+  generate_repository_name:
     runs-on: ubuntu-latest
 
     outputs:
-      docker_image_name: ${{ steps.generate_docker_image_name.outputs.result }}
+      docker_repository: ${{ steps.generate_docker_repository_name.outputs.result }}
 
     steps:
-      - name: Generate Docker image name
-        id: generate_docker_image_name
+      - name: Generate Docker repository name
+        id: generate_docker_repository_name
         uses: actions/github-script@v5
         with:
           result-encoding: string
           script: return `ghcr.io/${'${{ github.repository }}'.toLowerCase()}`;
 
   generate_image_tags:
-    needs: generate_image_name
+    needs: generate_repository_name
 
     runs-on: ubuntu-latest
 
@@ -39,12 +39,12 @@ jobs:
         with:
           result-encoding: string
           script: |
-            const imageName = '${{ needs.generate_image_name.outputs.docker_image_name }}';
+            const repository = '${{ needs.generate_repository_name.outputs.docker_repository }}';
             const shortSHA = '${{ github.sha }}'.slice(0, 7);
-            let imageTags = `${imageName}:latest\n${imageName}:${shortSHA}`;
+            let imageTags = `${repository}:latest\n${repository}:${shortSHA}`;
             if ('${{ github.event_name }}' === 'tags') {
               const gitTag = '${{ github.ref }}'.replace(/refs\/tags\/v?/, '');
-              imageTags += `\n${imageName}:${gitTag}`;
+              imageTags += `\n${repository}:${gitTag}`;
             }
             return imageTags;
 
@@ -96,19 +96,39 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  # deploy:
-  #   runs-on: ubuntu-latest
+  deploy:
+    needs: [generate_repository_name, build]
 
-  #   steps:
-  #     - name: Set IMAGE_NAME
-  #       run: echo IMAGE_NAME=$(echo ghcr.io/${{ github.repository }} | tr A-Z a-z) >> $GITHUB_ENV
+    runs-on: ubuntu-latest
 
-  #     - name: Deploy docker image to remote
-  #       uses: appleboy/ssh-action@master
-  #       with:
-  #         host: ${{ secrets.SSH_HOST }}
-  #         username: ${{ secrets.SSH_USERNAME }}
-  #         key: ${{ secrets.SSH_KEY }}
-  #         port: ${{ secrets.SSH_PORT }}
-  #         script: |
-  #           cd ${{ secrets.PRODUCTION_PATH }}
+    steps:
+      - name: Deploy docker image to remote
+        env:
+          APP_NAME: everyday_kataribe
+          DOCKER_REPOSITORY: ${{ needs.generate_repository_name.outputs.docker_repository }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            echo "# Download new Docker image"
+            sudo docker pull ${{ env.DOCKER_REPOSITORY }}
+            echo "# Stop running Docker container"
+            sudo systemctl stop ${{ env.APP_NAME }}
+            echo "# Clean old Docker container"
+            sudo docker container prune -f
+            echo "# Create new Docker container"
+            container_id=`sudo docker create \
+            -e EVERYDAY_KATARIBE_TOKEN=${{ env.EVERYDAY_KATARIBE_TOKEN }} \
+            -e TWITTER_BEARER_TOKEN=${{ env.TWITTER_BEARER_TOKEN }} \
+            -e RANDOM_POST_TWEET_SCHEDULE=${{ env.RANDOM_POST_TWEET_SCHEDULE }} \
+            -e ACTIVITY_STREAMING_NAME=${{ env.ACTIVITY_STREAMING_NAME }} \
+            -e ACTIVITY_STREAMING_URL=${{ env.ACTIVITY_STREAMING_URL }} \
+            -- name ${{ env.APP_NAME }}_worker
+            ${{ env.DOCKER_REPOSITORY }}`
+            echo "# Start new Docker container"
+            sudo systemctl start ${{ env.APP_NAME }}
+            echo "# Clean old Docker image"
+            sudo docker image prune -af
