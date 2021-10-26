@@ -42,10 +42,12 @@ jobs:
             const repository = '${{ needs.generate_repository_name.outputs.docker_repository }}';
             const shortSHA = '${{ github.sha }}'.slice(0, 7);
             let imageTags = `${repository}:latest\n${repository}:${shortSHA}`;
+
             if ('${{ github.event_name }}' === 'tags') {
               const gitTag = '${{ github.ref }}'.replace(/refs\/tags\/v?/, '');
               imageTags += `\n${repository}:${gitTag}`;
             }
+
             return imageTags;
 
   build:
@@ -113,22 +115,30 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            echo "# Download new Docker image"
-            sudo docker pull ${{ env.DOCKER_REPOSITORY }}
-            echo "# Stop running Docker container"
-            sudo systemctl stop ${{ env.APP_NAME }}
-            echo "# Clean old Docker container"
-            sudo docker container prune -f
-            echo "# Create new Docker container"
-            sudo docker create \
-            -e EVERYDAY_KATARIBE_TOKEN=${{ env.EVERYDAY_KATARIBE_TOKEN }} \
-            -e TWITTER_BEARER_TOKEN=${{ env.TWITTER_BEARER_TOKEN }} \
-            -e RANDOM_POST_TWEET_SCHEDULE=${{ env.RANDOM_POST_TWEET_SCHEDULE }} \
-            -e ACTIVITY_STREAMING_NAME=${{ env.ACTIVITY_STREAMING_NAME }} \
-            -e ACTIVITY_STREAMING_URL=${{ env.ACTIVITY_STREAMING_URL }} \
-            --name ${{ env.APP_NAME }}_worker \
-            ${{ env.DOCKER_REPOSITORY }}
-            echo "# Start new Docker container"
-            sudo systemctl start ${{ env.APP_NAME }}
-            echo "# Clean old Docker image"
-            sudo docker image prune -af
+            echo "SSH connection completed."
+            echo "Close the SSH connection."
+
+# echo "# Download new Docker image"
+# sudo docker pull ${{ env.DOCKER_REPOSITORY }}
+
+# echo "# Stop running Docker container"
+# sudo systemctl stop ${{ env.APP_NAME }}
+
+# echo "# Clean old Docker container"
+# sudo docker container prune -f
+
+# echo "# Create new Docker container"
+# sudo docker create \
+# -e EVERYDAY_KATARIBE_TOKEN=${{ env.EVERYDAY_KATARIBE_TOKEN }} \
+# -e TWITTER_BEARER_TOKEN=${{ env.TWITTER_BEARER_TOKEN }} \
+# -e RANDOM_POST_TWEET_SCHEDULE=${{ env.RANDOM_POST_TWEET_SCHEDULE }} \
+# -e ACTIVITY_STREAMING_NAME=${{ env.ACTIVITY_STREAMING_NAME }} \
+# -e ACTIVITY_STREAMING_URL=${{ env.ACTIVITY_STREAMING_URL }} \
+# --name ${{ env.APP_NAME }}_worker \
+# ${{ env.DOCKER_REPOSITORY }}
+
+# echo "# Start new Docker container"
+# sudo systemctl start ${{ env.APP_NAME }}
+
+# echo "# Clean old Docker image"
+# sudo docker image prune -af
