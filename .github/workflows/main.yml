@@ -124,11 +124,11 @@ jobs:
 
             echo "# Create new Docker container"
             sudo docker create \
-            -e EVERYDAY_KATARIBE_TOKEN=${{ env.EVERYDAY_KATARIBE_TOKEN }} \
-            -e TWITTER_BEARER_TOKEN=${{ env.TWITTER_BEARER_TOKEN }} \
-            -e RANDOM_POST_TWEET_SCHEDULE="${{ env.RANDOM_POST_TWEET_SCHEDULE }}" \
-            -e ACTIVITY_STREAMING_NAME="${{ env.ACTIVITY_STREAMING_NAME }}" \
-            -e ACTIVITY_STREAMING_URL=${{ env.ACTIVITY_STREAMING_URL }} \
+            -e EVERYDAY_KATARIBE_TOKEN=${{ secrets.EVERYDAY_KATARIBE_TOKEN }} \
+            -e TWITTER_BEARER_TOKEN=${{ secrets.TWITTER_BEARER_TOKEN }} \
+            -e RANDOM_POST_TWEET_SCHEDULE="${{ secrets.RANDOM_POST_TWEET_SCHEDULE }}" \
+            -e ACTIVITY_STREAMING_NAME="${{ secrets.ACTIVITY_STREAMING_NAME }}" \
+            -e ACTIVITY_STREAMING_URL=${{ secrets.ACTIVITY_STREAMING_URL }} \
             --name ${{ env.APP_NAME }}_worker \
             ${{ env.DOCKER_REPOSITORY }}
 
