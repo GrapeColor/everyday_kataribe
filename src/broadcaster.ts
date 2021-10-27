@@ -8,7 +8,11 @@ export namespace Broadcaster {
   export function initialize(bot: Client<true>, contentGenerator: () => string): void {
     cacheTargetChannels(bot);
 
-    cron.schedule(RANDOM_POST_TWEET_SCHEDULE, () => broadcast(contentGenerator));
+    cron.schedule(
+      RANDOM_POST_TWEET_SCHEDULE,
+      () => broadcast(contentGenerator),
+      { timezone: 'Asia/Tokyo' },
+    );
 
     bot
       .on('channelCreate', channel => addTargetChannel(channel))
