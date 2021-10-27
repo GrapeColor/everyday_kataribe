@@ -125,8 +125,8 @@ jobs:
             sudo docker create \
             -e EVERYDAY_KATARIBE_TOKEN=${{ env.EVERYDAY_KATARIBE_TOKEN }} \
             -e TWITTER_BEARER_TOKEN=${{ env.TWITTER_BEARER_TOKEN }} \
-            -e RANDOM_POST_TWEET_SCHEDULE=${{ env.RANDOM_POST_TWEET_SCHEDULE }} \
-            -e ACTIVITY_STREAMING_NAME=${{ env.ACTIVITY_STREAMING_NAME }} \
+            -e RANDOM_POST_TWEET_SCHEDULE="${{ env.RANDOM_POST_TWEET_SCHEDULE }}" \
+            -e ACTIVITY_STREAMING_NAME="${{ env.ACTIVITY_STREAMING_NAME }}" \
             -e ACTIVITY_STREAMING_URL=${{ env.ACTIVITY_STREAMING_URL }} \
             --name ${{ env.APP_NAME }}_worker \
             ${{ env.DOCKER_REPOSITORY }}
