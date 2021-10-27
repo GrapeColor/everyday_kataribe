@@ -5,7 +5,7 @@ on:
     branches-ignore:
       - '**'
     tags:
-      - '*'
+      - 'v*'
 
   workflow_dispatch:
 
@@ -40,7 +40,7 @@ jobs:
             const shortSHA = '${{ github.sha }}'.slice(0, 7);
             let imageTags = `${repository}:latest\n${repository}:${shortSHA}`;
 
-            if ('${{ github.event_name }}' === 'tags') {
+            if ('${{ github.ref }}'.startsWith('refs/tags/v')) {
               const gitTag = '${{ github.ref }}'.replace(/refs\/tags\/v?/, '');
               imageTags += `\n${repository}:${gitTag}`;
             }
