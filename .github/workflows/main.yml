@@ -111,6 +111,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          command_timeout: 30m
           script: |
             echo "# Download new Docker image"
             sudo docker pull ${{ env.DOCKER_REPOSITORY }}
