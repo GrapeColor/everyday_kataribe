@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Generate repository name
         id: generate_repository_name
-        run: echo "::set-output name=repository_name::ghcr.io/${{ github.repository }}" | tr A-Z a-z
+        run: echo ::set-output name=repository_name::ghcr.io/${{ github.repository }} | tr A-Z a-z
 
   generate_docker_image_tags:
     needs: generate_docker_repository_name
@@ -35,14 +35,14 @@ jobs:
         run: |
           repository_name="${{ needs.generate_docker_repository_name.outputs.repository_name }}"
           short_sha=`echo "${{ github.sha }}" | cut -c 1-7`
-          image_tags=`echo -e "${repository_name}:latest\n${repository_name}:${short_sha}"`
+          image_tags=`echo ${repository_name}:latest\\n${repository_name}:${short_sha}`
 
           if [[ "${{ github.ref }}" =~ ^refs/tags/v ]]; then
             git_tag=`echo "${{ github.ref }}" | sed "s/refs\/tags\/v//g"`
-            image_tags=`echo -e "${image_tags}\n${repository_name}:${git_tag}"`
+            image_tags=`echo ${image_tags}\\n${repository_name}:${git_tag}`
           fi
 
-          echo -e "::set-output name=image_tags::${image_tags}"
+          echo ::set-output name=image_tags::${image_tags}
 
   build:
     needs: generate_docker_image_tags
