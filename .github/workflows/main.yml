@@ -60,9 +60,10 @@ jobs:
         with:
           images: ${{ needs.generate_docker_repository_name.outputs.repository_name }}
           tags: |
+            type=sha,prefix=
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=sha,prefix=
+          flavor: latest=true
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
