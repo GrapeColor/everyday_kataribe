@@ -1,6 +1,6 @@
 import type { Client, ClientUser, Message } from 'discord.js';
 
-export namespace Responder {
+export namespace Replyer {
   export function initialize(bot: Client<true>, contentGenerator: () => string): void {
     bot.on('messageCreate', message => sendTweet(bot.user, message, contentGenerator));
   }

@@ -5,8 +5,8 @@ import {
 } from './environments';
 import { Client, Options } from 'discord.js';
 import { Lottery } from './lottery';
-import { Responder } from './responder';
 import { Broadcaster } from './broadcaster';
+import { Replyer } from './replyer';
 
 const bot = new Client({
   intents: ['GUILDS', 'GUILD_MESSAGES'],
@@ -22,7 +22,7 @@ const bot = new Client({
 bot.once('ready', bot => {
   Lottery.initialize();
   Broadcaster.initialize(bot, Lottery.pickTweetURL);
-  Responder.initialize(bot, Lottery.pickTweetURL);
+  Replyer.initialize(bot, Lottery.pickTweetURL);
 
   console.info('Everyday Kataribe (re)logged in to Discord.');
 });
