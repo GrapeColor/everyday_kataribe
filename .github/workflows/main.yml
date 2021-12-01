@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      image_tags: ${{ steps.generate_docker_image_tags.outputs.image_tags }}
+      image_tags: ${{ steps.generate_image_tags.outputs.image_tags }}
 
     steps:
       - name: Generate image tags
@@ -44,7 +44,7 @@ jobs:
             version_tag=${repository_name}:${version_name}
           fi
 
-          echo ::set-output name=image_tags::${latest_tag}\\n${sha_tag}\\n${version_tag}
+          echo -e "::set-output name=image_tags::${latest_tag}\n${sha_tag}\n${version_tag}"
 
   build:
     needs: generate_docker_image_tags
