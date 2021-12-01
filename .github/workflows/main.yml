@@ -44,7 +44,7 @@ jobs:
             version_tag=${repository_name}:${version_name}
           fi
 
-          echo -e "::set-output name=image_tags::${latest_tag}\n${sha_tag}\n${version_tag}"
+          echo ::set-output name=image_tags::${latest_tag}\\n${sha_tag}\\n${version_tag}
 
   build:
     needs: generate_docker_image_tags
